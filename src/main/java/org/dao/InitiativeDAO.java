@@ -1,29 +1,34 @@
 package org.dao;
 
-import org.entities.User;
-import org.entities.enums.UserStatus;
-import org.idao.IDaoUser;
+import org.entities.Initiative;
+import org.entities.enums.InitiativeStatus;
+import org.idao.IDaoInitiative;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO extends GenericDAO implements IDaoUser {
+public class InitiativeDAO extends GenericDAO implements IDaoInitiative {
 
-    public UserDAO() {
+    public InitiativeDAO() {
 
     }
 
-    public void add(User user) {
+
+    public void add(Initiative initiative) {
         try {
-            String queryString = "INSERT INTO users(user_id, email, login, password, status) VALUES(?,?,?,?,?)";
+            String queryString = "INSERT INTO initiatives(init_id, name, description, user_id, voting_days_left, implem_start_date, budget, votes_num, status) VALUES(?,?,?,?,?,?,?,?,?)";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
-            ptmt.setInt(1, user.getIdentifier());
-            ptmt.setString(2, user.getEmail());
-            ptmt.setString(3, user.getLogin());
-            ptmt.setString(4, user.getPassword());
-            ptmt.setString(5, user.getStatus().name());
+            ptmt.setInt(1, initiative.getIdentifier());
+            ptmt.setString(2, initiative.getName());
+            ptmt.setString(3, initiative.getDescription());
+            ptmt.setInt(4, initiative.getUser_id());
+            ptmt.setInt(5, initiative.getVoting_days_left());
+            ptmt.setDate(6, initiative.getImplem_start_date());
+            ptmt.setInt(7, initiative.getBudget());
+            ptmt.setInt(8, initiative.getVotes_num());
+            ptmt.setString(9, initiative.getStatus().name());
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {
@@ -42,10 +47,10 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
     }
 
-    public void delete(int id) {
 
+    public void delete(int id) {
         try {
-            String queryString = "DELETE FROM users WHERE user_id=?";
+            String queryString = "DELETE FROM initiatives WHERE init_id=?";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
             ptmt.setInt(1, id);
@@ -67,24 +72,29 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
     }
 
-    public List<User> findAll() {
-        List<User> userList = new ArrayList<>();
+
+    public List<Initiative> findAll() {
+        List<Initiative> initiativeList = new ArrayList<>();
 
         try {
-            String queryString = "SELECT * FROM users";
+            String queryString = "SELECT * FROM initiatives";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
             resultSet = ptmt.executeQuery();
             while (resultSet.next()) {
-                User user = new User();
+                Initiative initiative = new Initiative();
 
-                user.setIdentifier(resultSet.getInt("user_id"));
-                user.setEmail(resultSet.getString("email"));
-                user.setLogin(resultSet.getString("login"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(UserStatus.valueOf(resultSet.getString("status")));
+                initiative.setIdentifier(resultSet.getInt("init_id"));
+                initiative.setName(resultSet.getString("name"));
+                initiative.setDescription(resultSet.getString("description"));
+                initiative.setUser_id(resultSet.getInt("user_id"));
+                initiative.setVoting_days_left(resultSet.getInt("voting_days_left"));
+                initiative.setImplem_start_date(resultSet.getDate("implem_start_date"));
+                initiative.setBudget(resultSet.getInt("budget"));
+                initiative.setVotes_num(resultSet.getInt("votes_num"));
+                initiative.setStatus(InitiativeStatus.valueOf(resultSet.getString("status")));
 
-                userList.add(user);
+                initiativeList.add(initiative);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,6 +112,6 @@ public class UserDAO extends GenericDAO implements IDaoUser {
                 e.printStackTrace();
             }
         }
-        return userList;
+        return initiativeList;
     }
 }

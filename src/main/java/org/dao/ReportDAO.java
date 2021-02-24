@@ -1,29 +1,28 @@
 package org.dao;
 
-import org.entities.User;
-import org.entities.enums.UserStatus;
-import org.idao.IDaoUser;
+import org.entities.Report;
+import org.idao.IDaoReport;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO extends GenericDAO implements IDaoUser {
+public class ReportDAO extends GenericDAO implements IDaoReport {
 
-    public UserDAO() {
+    public ReportDAO() {
 
     }
 
-    public void add(User user) {
+    public void add(Report report) {
         try {
-            String queryString = "INSERT INTO users(user_id, email, login, password, status) VALUES(?,?,?,?,?)";
+            String queryString = "INSERT INTO reports(report_id, init_id, description, implem_end_date, end_budget) VALUES(?,?,?,?,?)";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
-            ptmt.setInt(1, user.getIdentifier());
-            ptmt.setString(2, user.getEmail());
-            ptmt.setString(3, user.getLogin());
-            ptmt.setString(4, user.getPassword());
-            ptmt.setString(5, user.getStatus().name());
+            ptmt.setInt(1, report.getIdentifier());
+            ptmt.setInt(2, report.getInit_id());
+            ptmt.setString(3, report.getDescription());
+            ptmt.setDate(4, report.getImplem_end_date());
+            ptmt.setInt(5, report.getEnd_budget());
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {
@@ -42,10 +41,10 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
     }
 
-    public void delete(int id) {
 
+    public void delete(int id) {
         try {
-            String queryString = "DELETE FROM users WHERE user_id=?";
+            String queryString = "DELETE FROM reports WHERE report_id=?";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
             ptmt.setInt(1, id);
@@ -67,24 +66,25 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
     }
 
-    public List<User> findAll() {
-        List<User> userList = new ArrayList<>();
+
+    public List<Report> findAll() {
+        List<Report> reportList = new ArrayList<>();
 
         try {
-            String queryString = "SELECT * FROM users";
+            String queryString = "SELECT * FROM reports";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
             resultSet = ptmt.executeQuery();
             while (resultSet.next()) {
-                User user = new User();
+                Report report = new Report();
 
-                user.setIdentifier(resultSet.getInt("user_id"));
-                user.setEmail(resultSet.getString("email"));
-                user.setLogin(resultSet.getString("login"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(UserStatus.valueOf(resultSet.getString("status")));
+                report.setIdentifier(resultSet.getInt("report_id"));
+                report.setInit_id(resultSet.getInt("init_id"));
+                report.setDescription(resultSet.getString("description"));
+                report.setImplem_end_date(resultSet.getDate("implem_end_date"));
+                report.setEnd_budget(resultSet.getInt("end_budget"));
 
-                userList.add(user);
+                reportList.add(report);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,6 +102,6 @@ public class UserDAO extends GenericDAO implements IDaoUser {
                 e.printStackTrace();
             }
         }
-        return userList;
+        return reportList;
     }
 }

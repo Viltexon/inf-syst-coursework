@@ -1,29 +1,28 @@
 package org.dao;
 
-import org.entities.User;
-import org.entities.enums.UserStatus;
-import org.idao.IDaoUser;
+import org.entities.Report;
+import org.entities.Vote;
+import org.idao.IDaoVote;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO extends GenericDAO implements IDaoUser {
 
-    public UserDAO() {
+public class VoteDAO extends GenericDAO implements IDaoVote {
+
+    public VoteDAO() {
 
     }
 
-    public void add(User user) {
+    public void add(Vote vote) {
         try {
-            String queryString = "INSERT INTO users(user_id, email, login, password, status) VALUES(?,?,?,?,?)";
+            String queryString = "INSERT INTO votes(vote_id, init_id, user_id) VALUES(?,?,?)";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
-            ptmt.setInt(1, user.getIdentifier());
-            ptmt.setString(2, user.getEmail());
-            ptmt.setString(3, user.getLogin());
-            ptmt.setString(4, user.getPassword());
-            ptmt.setString(5, user.getStatus().name());
+            ptmt.setInt(1, vote.getIdentifier());
+            ptmt.setInt(2, vote.getInit_id());
+            ptmt.setInt(3, vote.getUser_id());
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {
@@ -42,10 +41,10 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
     }
 
-    public void delete(int id) {
 
+    public void delete(int id) {
         try {
-            String queryString = "DELETE FROM users WHERE user_id=?";
+            String queryString = "DELETE FROM votes WHERE vote_id=?";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
             ptmt.setInt(1, id);
@@ -67,24 +66,23 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
     }
 
-    public List<User> findAll() {
-        List<User> userList = new ArrayList<>();
+
+    public List<Vote> findAll() {
+        List<Vote> voteList = new ArrayList<>();
 
         try {
-            String queryString = "SELECT * FROM users";
+            String queryString = "SELECT * FROM votes";
             connection = getConnection();
             ptmt = connection.prepareStatement(queryString);
             resultSet = ptmt.executeQuery();
             while (resultSet.next()) {
-                User user = new User();
+                Vote vote = new Vote();
 
-                user.setIdentifier(resultSet.getInt("user_id"));
-                user.setEmail(resultSet.getString("email"));
-                user.setLogin(resultSet.getString("login"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(UserStatus.valueOf(resultSet.getString("status")));
+                vote.setIdentifier(resultSet.getInt("vote_id"));
+                vote.setInit_id(resultSet.getInt("init_id"));
+                vote.setUser_id(resultSet.getInt("user_id"));
 
-                userList.add(user);
+                voteList.add(vote);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,6 +100,6 @@ public class UserDAO extends GenericDAO implements IDaoUser {
                 e.printStackTrace();
             }
         }
-        return userList;
+        return voteList;
     }
 }
