@@ -2,7 +2,6 @@ package org.commands;
 
 import org.entities.User;
 import org.services.ServiceUser;
-import org.services.ServiceLogin;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +21,8 @@ public class CommandLogin implements ICommand{
         String path;
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        ServiceLogin serviceLogin = new ServiceLogin();
         ServiceUser serviceUser = new ServiceUser();
-        Boolean statusLogin = serviceLogin.login(email, password);
+        Boolean statusLogin = serviceUser.login(email, password);
 
 //        System.out.println(System.getProperty("user.dir"));
 
