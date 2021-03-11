@@ -10,5 +10,6 @@ public interface IDaoUser {
     void add(User user);
     void delete(int id);
     List<User> findAll();
+    User find(String email);
 
 }

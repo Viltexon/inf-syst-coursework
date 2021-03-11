@@ -104,4 +104,39 @@ public class UserDAO extends GenericDAO implements IDaoUser {
         }
         return userList;
     }
+
+    public User find(String email) {
+        User user = new User();
+
+        try {
+            String queryString = "SELECT * FROM users WHERE email='" + email + "'";
+            connection = getConnection();
+            ptmt = connection.prepareStatement(queryString);
+            resultSet = ptmt.executeQuery();
+
+            while (resultSet.next()) {
+                user.setIdentifier(resultSet.getInt("user_id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setLogin(resultSet.getString("login"));
+                user.setPassword(resultSet.getString("password"));
+                user.setStatus(UserStatus.valueOf(resultSet.getString("status")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (ptmt != null)
+                    ptmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return user;
+    }
 }

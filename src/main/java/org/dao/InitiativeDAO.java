@@ -14,7 +14,7 @@ public class InitiativeDAO extends GenericDAO implements IDaoInitiative {
 
     }
 
-
+    // addNew, add 'voting','implem','ended'
     public void add(Initiative initiative) {
         try {
             String queryString = "INSERT INTO initiatives(init_id, name, description, user_id, voting_days_left, implem_start_date, budget, votes_num, status) VALUES(?,?,?,?,?,?,?,?,?)";
@@ -29,6 +29,60 @@ public class InitiativeDAO extends GenericDAO implements IDaoInitiative {
             ptmt.setInt(7, initiative.getBudget());
             ptmt.setInt(8, initiative.getVotes_num());
             ptmt.setString(9, initiative.getStatus().name());
+            ptmt.executeUpdate();
+            System.out.println("Data Added Successfully");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ptmt != null)
+                    ptmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void update() {
+        try {
+            String queryString = "UPDATE initiatives SET votes_num = (SELECT COUNT(*) FROM votes WHERE init_id=initiatives.init_id)";
+            connection = getConnection();
+            ptmt = connection.prepareStatement(queryString);
+            ptmt.executeUpdate();
+            System.out.println("Data Updated Successfully");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ptmt != null)
+                    ptmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void addNew(Initiative initiative) {
+        try {
+            String queryString = "INSERT INTO initiatives(name, description, user_id, budget, votes_num, status) VALUES(?,?,?,?,?,?)";
+            connection = getConnection();
+            ptmt = connection.prepareStatement(queryString);
+            ptmt.setString(1, initiative.getName());
+            ptmt.setString(2, initiative.getDescription());
+            ptmt.setInt(3, initiative.getUser_id());
+            ptmt.setInt(4, initiative.getBudget());
+            ptmt.setInt(5, initiative.getVotes_num());
+            ptmt.setString(6, initiative.getStatus().name());
             ptmt.executeUpdate();
             System.out.println("Data Added Successfully");
         } catch (SQLException e) {

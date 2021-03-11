@@ -21,7 +21,7 @@ public class ConnectionFactory {
     private ConnectionFactory() {
         try {
 
-            try (InputStream input = new FileInputStream("./config.properties")) {
+            try (InputStream input = new FileInputStream("D:\\config.properties")) {
                 Properties prop = new Properties();
                 prop.load(input);
                 driverClassName = prop.getProperty("driverClassName");
@@ -37,7 +37,7 @@ public class ConnectionFactory {
     public Connection getConnection() throws SQLException {
 
         Connection conn = null;
-        try (InputStream input = new FileInputStream("./config.properties")) {
+        try (InputStream input = new FileInputStream("D:\\config.properties")) {
             Properties prop = new Properties();
             prop.load(input);
             connectionUrl = prop.getProperty("connectionUrl");

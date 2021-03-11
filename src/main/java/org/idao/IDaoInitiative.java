@@ -8,6 +8,8 @@ import java.util.List;
 public interface IDaoInitiative {
 
     void add(Initiative initiative);
+    void update();
+    void addNew(Initiative initiative);
     void delete(int id);
     List<Initiative> findAll();
 
